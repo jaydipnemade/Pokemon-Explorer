@@ -1,8 +1,8 @@
 // ui/Navbar.tsx
-import Link from 'next/link';
-import { useSearch } from '../context/SearchContext';
-import { capitalize } from '../utils/format';
-import { useRouter } from 'next/router';
+import Link from "next/link";
+import { useSearch } from "../context/SearchContext";
+import { capitalize } from "../utils/format";
+import { useRouter } from "next/router";
 
 export default function Navbar() {
   const { search, setSearch, pokemons } = useSearch();
@@ -16,7 +16,7 @@ export default function Navbar() {
 
   // Clear search on navigating to a result
   const handleSelect = (name: string) => {
-    setSearch('');
+    setSearch("");
     router.push(`/pokemon/${name}`);
   };
 
@@ -25,8 +25,11 @@ export default function Navbar() {
       <div className="relative max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
         <Link href="/" passHref>
           <div className="flex  p-2  rounded-2xl   bg-red-500 items-center space-x-2 cursor-pointer ">
-            <img src="/pkball.png" alt="Pokéball" className="w-8 h-8 animate-bounce "
-             />
+            <img
+              src="/pkball.png"
+              alt="Pokéball"
+              className="w-8 h-8 animate-bounce "
+            />
             <span className="text-white text-2xl font-bold">PokeWorld</span>
           </div>
         </Link>
