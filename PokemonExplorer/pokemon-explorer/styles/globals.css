@@ -1,0 +1,8 @@
+@import "tailwindcss";
+
+body {
+  background-image: url('/bg-1.png');
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+}
