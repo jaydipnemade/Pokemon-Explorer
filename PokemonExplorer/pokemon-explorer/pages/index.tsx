@@ -61,7 +61,7 @@ export default function Home() {
       <main className="py-8 px-4">
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
           {filtered.map((pokemon) => (
-            <Link key={pokemon.name} href={`/pokemon/${pokemon.name}`}>
+            <Link key={pokemon.name} href={`/pokemon/${pokemon.id}`}>
               <div className="relative transition transform hover:scale-105">
                 <img
                   src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`}
