@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import Link from "next/link";
 import { fetchAllPokemons } from "../lib/api";
 import { PokemonBasic } from "../types/pokemon";
@@ -22,15 +22,11 @@ export default function Home() {
   // Apply sorting
   filtered = [...filtered].sort((a, b) => {
     switch (sortOption) {
-      case "name-asc":
-        return a.name.localeCompare(b.name);
       case "name-desc":
         return b.name.localeCompare(a.name);
-      case "id-desc":
-        return b.id - a.id;
-      case "id-asc":
+      case "name-asc":
       default:
-        return a.id - b.id;
+        return a.name.localeCompare(b.name);
     }
   });
 
@@ -38,7 +34,7 @@ export default function Home() {
     <div className="p-4 max-w-6xl mx-auto">
       {/* Sorting Dropdown */}
       <div className="mb-6 flex justify-end">
-        <div className="flex items-center gap-2 bg-white/80 backdrop-blur-md px-4 py-2 rounded-xl shadow-lg border border-red-300 w-fit">
+        <div className="flex items-center gap-2 md:bg-white/80 backdrop-blur-md px-2 py-2 rounded-4xl md:shadow-lg md:border md:border-red-300 w-fit">
           <span className="text-sm font-bold text-red-600 whitespace-nowrap">
             Sort by:
           </span>
@@ -47,10 +43,8 @@ export default function Home() {
             <select
               value={sortOption}
               onChange={(e) => setSortOption(e.target.value)}
-              className="appearance-none bg-gradient-to-r from-yellow-200 via-orange-300 to-red-300 text-gray-800 font-semibold rounded-lg px-4 py-2 pr-10 shadow-inner focus:outline-none focus:ring-2 focus:ring-red-500 hover:brightness-105 transition-all duration-200"
+              className="appearance-none bg-gradient-to-r from-yellow-200 via-orange-300 to-red-300 text-gray-800 font-semibold rounded-4xl px-2 py-2 pr-10 shadow-inner focus:outline-none focus:ring-2 focus:ring-red-500 hover:brightness-105 transition-all duration-200"
             >
-              <option value="id-asc">ID ↑</option>
-              <option value="id-desc">ID ↓</option>
               <option value="name-asc">Name A-Z</option>
               <option value="name-desc">Name Z-A</option>
             </select>

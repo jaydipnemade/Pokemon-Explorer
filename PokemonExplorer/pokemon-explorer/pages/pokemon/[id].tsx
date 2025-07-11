@@ -1,5 +1,5 @@
 import { GetServerSideProps } from "next";
-import { fetchPokemonByName } from "../../lib/api";
+import { fetchPokemonByIdOrName } from "../../lib/api";
 import { capitalize } from "../../utils/format";
 import { BarChart, Sparkles, Zap, Info, Swords, Workflow } from "lucide-react";
 
@@ -23,7 +23,7 @@ export default function PokemonDetailPage({ pokemon }: Props) {
             <img
               src={pokemon.sprites.other["official-artwork"].front_default}
               alt={pokemon.name}
-              className="w-full h-auto object-contain transition-transform duration-500 hover:scale-105"
+              className="w-full h-auto object-contain animate-breathe transition-transform duration-300 hover:scale-110"
             />
           </div>
         </div>
@@ -170,12 +170,13 @@ function EvolutionChain({ chain }: { chain: any }) {
 
 // Server-side rendering
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-  const name = params?.name as string;
+  const id = params?.id as string;
 
   try {
-    const pokemon = await fetchPokemonByName(name);
+    const pokemon = await fetchPokemonByIdOrName(id);
     return { props: { pokemon } };
   } catch (err) {
     return { notFound: true };
   }
 };
+
