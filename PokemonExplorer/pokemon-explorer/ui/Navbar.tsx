@@ -3,22 +3,35 @@ import Link from "next/link";
 import { useSearch } from "../context/SearchContext";
 import { capitalize } from "../utils/format";
 import { useRouter } from "next/router";
-
+import { useEffect, useState } from "react";
+import { fetchPokemonsBySearch } from "../lib/api";
 export default function Navbar() {
-  const { search, setSearch, pokemons } = useSearch();
+  const { search, setSearch } = useSearch();
   const router = useRouter();
 
-  const filtered = search
-    ? pokemons.filter((p) =>
-        p.name.toLowerCase().includes(search.toLowerCase())
-      )
-    : [];
+  const [results, setResults] = useState<{ name: string; id: number }[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  // Clear search on navigating to a result
-  const handleSelect = (name: string) => {
+  // Fetch matching Pokémon on search input
+  useEffect(() => {
+    if (!search) return setResults([]);
+
+    const delayDebounce = setTimeout(async () => {
+      setLoading(true);
+      const res = await fetchPokemonsBySearch(search);
+      setResults(res);
+      setLoading(false);
+    }, 300); // debounce
+
+    return () => clearTimeout(delayDebounce);
+  }, [search]);
+
+  const handleSelect = (id: number) => {
     setSearch("");
-    router.push(`/pokemon/${name}`);
+    setResults([]);
+    router.push(`/pokemon/${id}`);
   };
+  
 
   return (
     <nav className="md:bg-red-500 backdrop-blur sticky top-0 z-10">
@@ -43,13 +56,13 @@ export default function Navbar() {
             onChange={(e) => setSearch(e.target.value)}
           />
 
-          {filtered.length > 0 && (
+          {results.length > 0 && (
             <ul className="absolute mt-1 w-full bg-white shadow-lg rounded z-50 max-h-60 overflow-y-auto">
-              {filtered.slice(0, 8).map((p) => (
+              {results.slice(0, 8).map((p) => (
                 <li
-                  key={p.name}
+                  key={p.id}
                   className="cursor-pointer px-3 py-2 hover:bg-yellow-100 text-gray-800 flex items-center gap-2"
-                  onClick={() => handleSelect(p.name)}
+                  onClick={() => handleSelect(p.id)}
                 >
                   <img
                     src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${p.id}.png`}

@@ -1,20 +1,44 @@
 import { PokemonBasic, PokemonDetail } from "../types/pokemon";
 
-export async function fetchAllPokemons(): Promise<PokemonBasic[]> {
-  const res = await fetch("https://pokeapi.co/api/v2/pokemon?limit=151");
+// 
+export async function fetchAllPokemons(
+  offset = 0,
+  limit = 20
+): Promise<PokemonBasic[]> {
+  const res = await fetch(
+    `https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${limit}`
+  );
   const data = await res.json();
 
   const pokemons: PokemonBasic[] = data.results.map(
     (p: any, index: number) => ({
       name: p.name,
-      id: index + 1,
+      id: offset + index + 1, // accurate ID
     })
   );
 
-  // Sort alphabetically by name
-  return pokemons.sort((a, b) => a.name.localeCompare(b.name));
+  return pokemons;
+}
+// 
+export async function fetchPokemonsBySearch(
+  search: string
+): Promise<{ name: string; id: number }[]> {
+  const TOTAL = 1302;
+  const res = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${TOTAL}`);
+  const data = await res.json();
+
+  return data.results
+    .filter((p: any) => p.name.toLowerCase().includes(search.toLowerCase()))
+    .map((p: any) => {
+      const match = p.url.match(/\/pokemon\/(\d+)\//);
+      return {
+        name: p.name,
+        id: match ? parseInt(match[1]) : 0,
+      };
+    });
 }
 
+// 
 export async function fetchPokemonByIdOrName(
   idOrName: string
 ): Promise<PokemonDetail> {
